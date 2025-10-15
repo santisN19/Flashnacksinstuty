@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashSnacks - Tu comida rápida favorita</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: #000;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ff0000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            background: #333;
+            transition: all 0.3s;
+        }
+        
+        .user-section:hover {
+            background: #444;
+        }
+        
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: #ff0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .btn-carrito {
+            background: #ff0000;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.3s;
+        }
+        
+        .btn-carrito:hover {
+            background: #cc0000;
+        }
+        
+        .carrito-contador {
+            background: #fff;
+            color: #ff0000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+        }
+        
+        .restaurantes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .restaurante-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .restaurante-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .restaurante-imagen {
+            height: 200px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+        
+        .restaurante-info {
+            padding: 1.5rem;
+        }
+        
+        .restaurante-nombre {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .restaurante-descripcion {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-ver-menu {
+            background: #ff0000;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .btn-ver-menu:hover {
+            background: #cc0000;
+        }
+        
+        /* MODALES DE AUTENTICACIÓN */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background: #2a2a2a;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff0000;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-modal:hover {
+            background: #333;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #333;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #ff0000;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-login {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-login:hover {
+            background: #218838;
+        }
+        
+        .btn-register {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-register:hover {
+            background: #0056b3;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            color: #ccc;
+        }
+        
+        .auth-link {
+            color: #ff0000;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .auth-link:hover {
+            color: #cc0000;
+        }
+        
+        .mensaje-auth {
+            padding: 0.8rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .mensaje-exito {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .mensaje-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .user-menu {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            padding: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: none;
+            z-index: 100;
+            min-width: 200px;
+        }
+        
+        .user-menu-item {
+            padding: 0.8rem;
+            color: white;
+            text-decoration: none;
+            display: block;
+            border-radius: 3px;
+            transition: background 0.3s;
+        }
+        
+        .user-menu-item:hover {
+            background: #333;
+        }
+        
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .btn-logout:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            🍔 FlashSnacks
+        </div>
+        
+        <div class="nav-buttons">
+            <!-- Sección de Usuario -->
+            <div class="user-section" id="userSection">
+                <div class="user-avatar" id="userAvatar">
+                    👤
+                </div>
+                <span id="userText">REGISTRARSE</span>
+            </div>
+            
+            <!-- Carrito -->
+            <a href="{% url 'core:ver_carrito' %}" class="btn-carrito">
+                🛒 Carrito
+                <span class="carrito-contador" id="carritoContador">0</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Menú de Usuario (Desplegable) -->
+    <div class="user-menu" id="userMenu">
+        <div class="user-menu-item">
+            <strong id="menuUsername">Usuario</strong>
+        </div>
+        <a href="{% url 'core:mis_compras' %}" class="user-menu-item">📦 Mis Compras</a>
+        <button class="btn-logout" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>¡Bienvenido a FlashSnacks!</h1>
+        <p>Tu comida rápida favorita, más cerca que nunca</p>
+    </div>
+
+    <!-- Grid de Restaurantes -->
+    <div class="restaurantes-grid">
+        {% for restaurante in restaurantes %}
+        <div class="restaurante-card" onclick="location.href='{% url 'core:menu_restaurante' restaurante.id %}'">
+            <div class="restaurante-imagen" style="background: {{ restaurante.color_principal }};">
+                {% if restaurante.logo %}
+                <img src="{{ restaurante.logo.url }}" alt="{{ restaurante.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                🍔
+                {% endif %}
+            </div>
+            <div class="restaurante-info">
+                <h3 class="restaurante-nombre">{{ restaurante.nombre }}</h3>
+                <p class="restaurante-descripcion">{{ restaurante.descripcion|default:"Los mejores productos de comida rápida" }}</p>
+                <a href="{% url 'core:menu_restaurante' restaurante.id %}" class="btn-ver-menu">Ver Menú</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal de Inicio de Sesión -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Iniciar Sesión</h3>
+                <button class="close-modal" onclick="cerrarModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="loginMensaje" class="mensaje-auth"></div>
+                <form id="loginForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Usuario</label>
+                        <input type="text" name="username" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="password" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn-auth btn-login">Iniciar Sesión</button>
+                </form>
+                <div class="auth-switch">
+                    ¿No tienes cuenta? <span class="auth-link" onclick="mostrarRegistro()">Regístrate aquí</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Crear Cuenta</h3>
+                <button class="close-modal" onclick="cerrarModal('registerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="registerMensaje" class="mensaje-auth"></div>
+                <form id="registerForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Usuario *</label>
+                        <input type="text" name="username" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" name="email" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contraseña *</label>
+                        <input type="password" name="password1" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirmar Contraseña *</label>
+                        <input type="password" name="password2" class="form-input" required>
+                    </div>
+                    <button type="submit" class="btn-auth btn-register">Registrarse</button>
+                </form>
+                <div class="auth-switch">
+                    ¿Ya tienes cuenta? <span class="auth-link" onclick="mostrarLogin()">Inicia sesión aquí</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado de autenticación
+        let usuarioLogueado = {{ request.user.is_authenticated|yesno:"true,false" }};
+        let username = "{{ request.user.username }}";
+
+        // Inicializar interfaz
+        function inicializarInterfaz() {
+            const userSection = document.getElementById('userSection');
+            const userText = document.getElementById('userText');
+            const userAvatar = document.getElementById('userAvatar');
+            const userMenu = document.getElementById('userMenu');
+            const menuUsername = document.getElementById('menuUsername');
+            
+            if (usuarioLogueado && username) {
+                // Usuario logueado
+                userText.textContent = username;
+                userAvatar.textContent = username.charAt(0).toUpperCase();
+                userAvatar.style.background = '#28a745';
+                
+                // Configurar menú desplegable
+                userSection.onclick = function(e) {
+                    e.stopPropagation();
+                    userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+                };
+                
+                menuUsername.textContent = username;
+            } else {
+                // Usuario no logueado
+                userText.textContent = 'REGISTRARSE';
+                userAvatar.textContent = '👤';
+                userAvatar.style.background = '#ff0000';
+                
+                userSection.onclick = function() {
+                    mostrarLogin();
+                };
+            }
+            
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', function() {
+                userMenu.style.display = 'none';
+            });
+        }
+        
+        // Funciones de modales
+        function mostrarLogin() {
+            document.getElementById('loginModal').style.display = 'block';
+            document.getElementById('registerModal').style.display = 'none';
+        }
+        
+        function mostrarRegistro() {
+            document.getElementById('registerModal').style.display = 'block';
+            document.getElementById('loginModal').style.display = 'none';
+        }
+        
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Iniciar Sesión
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const mensaje = document.getElementById('loginMensaje');
+            
+            fetch('{% url 'core:iniciar_sesion' %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mensaje.textContent = data.message;
+                    mensaje.className = 'mensaje-auth mensaje-exito';
+                    mensaje.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        cerrarModal('loginModal');
+                        location.reload();
+                    }, 1500);
+                } else {
+                    mensaje.textContent = data.error;
+                    mensaje.className = 'mensaje-auth mensaje-error';
+                    mensaje.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                mensaje.textContent = 'Error de conexión';
+                mensaje.className = 'mensaje-auth mensaje-error';
+                mensaje.style.display = 'block';
+            });
+        });
+        
+        // Registrar Usuario
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const mensaje = document.getElementById('registerMensaje');
+            
+            fetch('{% url 'core:registrar_usuario' %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mensaje.textContent = data.message;
+                    mensaje.className = 'mensaje-auth mensaje-exito';
+                    mensaje.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        cerrarModal('registerModal');
+                        location.reload();
+                    }, 1500);
+                } else {
+                    mensaje.textContent = data.error;
+                    mensaje.className = 'mensaje-auth mensaje-error';
+                    mensaje.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                mensaje.textContent = 'Error de conexión';
+                mensaje.className = 'mensaje-auth mensaje-error';
+                mensaje.style.display = 'block';
+            });
+        });
+        
+        // Cerrar Sesión
+        function cerrarSesion() {
+            fetch('{% url 'core:cerrar_sesion' %}', {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+        
+        // Inicializar cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            inicializarInterfaz();
+        });
+    </script>
+</body>
+</html>

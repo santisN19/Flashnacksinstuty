@@ -20,7 +20,8 @@ SECRET_KEY = 'django-insecure--i+wnlkm6m-lhi@d69q+388n+(u8)^+2!&1uip*03&co*h#8ur
 DEBUG = True
 
 # Ajusta según tu dominio en producción
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'santisn.pythonanywhere.com']
+ALLOWED_HOSTS = ["santisn.pythonanywhere.com", "localhost", "127.0.0.1"]
+
 
 # -----------------------------
 # Apps instaladas

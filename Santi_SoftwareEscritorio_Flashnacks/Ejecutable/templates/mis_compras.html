@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Compras - FlashSnacks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: #000;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid #ff0000;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn:hover {
+            background: #555;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+        
+        .compra-card {
+            background: #2a2a2a;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+        
+        .compra-header {
+            background: #333;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
+        }
+        
+        .compra-info h3 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .compra-fecha {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .compra-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff4444;
+        }
+        
+        .compra-body {
+            padding: 1.5rem;
+        }
+        
+        .items-list {
+            margin-bottom: 1rem;
+        }
+        
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .item-row:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            flex-grow: 1;
+        }
+        
+        .item-details {
+            color: #ccc;
+            text-align: right;
+        }
+        
+        .compra-footer {
+            background: #333;
+            padding: 1rem 1.5rem;
+            text-align: right;
+            border-top: 1px solid #444;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #2a2a2a;
+            border-radius: 10px;
+            border: 2px solid #444;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mensajes {
+            margin-bottom: 2rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'core:index' %}" class="back-btn">← Volver al Inicio</a>
+        <h1>📦 Mis Compras</h1>
+    </div>
+    
+    <div class="container">
+        <!-- Mensajes -->
+        {% if messages %}
+        <div class="mensajes">
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="page-title">
+            <h2>Historial de Compras</h2>
+            <p>Todas tus compras agrupadas en un solo lugar</p>
+        </div>
+        
+        {% if compras %}
+            {% for compra in compras %}
+            <div class="compra-card">
+                <div class="compra-header">
+                    <div class="compra-info">
+                        <h3>Compra #{{ compra.id }}</h3>
+                        <div class="compra-fecha">
+                            {{ compra.fecha_compra|date:"d/m/Y H:i" }}
+                        </div>
+                    </div>
+                    <div class="compra-total">
+                        ${{ compra.total }}
+                    </div>
+                </div>
+                
+                <div class="compra-body">
+                    <div class="items-list">
+                        {% for item in compra.items.all %}
+                        <div class="item-row">
+                            <div class="item-name">
+                                {{ item.producto.nombre }}
+                            </div>
+                            <div class="item-details">
+                                {{ item.cantidad }} x ${{ item.precio_unitario }} = ${{ item.subtotal }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="compra-footer">
+                    <span class="estado-badge">
+                        Estado: <strong>{{ compra.get_estado_display }}</strong>
+                    </span>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">📦</div>
+                <h3>No tienes compras realizadas</h3>
+                <p>¡Descubre nuestros productos y realiza tu primera compra!</p>
+                <a href="{% url 'core:index' %}" class="btn btn-primary" style="margin-top: 1rem;">
+                    Comenzar a Comprar
+                </a>
+            </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="{% url 'core:index' %}" class="btn btn-secondary">
+                Seguir Comprando
+            </a>
+        </div>
+    </div>
+</body>
+</html>

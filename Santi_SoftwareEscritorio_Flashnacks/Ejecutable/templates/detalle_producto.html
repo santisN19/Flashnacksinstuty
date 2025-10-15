@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ producto.nombre }} - FlashSnacks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: white;
+        }
+        
+        .header {
+            background: #000;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            border-bottom: 3px solid #ff0000;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn:hover {
+            background: #555;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .producto-detalle {
+            background: #2a2a2a;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid #444;
+        }
+        
+        .producto-imagen {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(45deg, #333, #444);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: #666;
+        }
+        
+        .producto-info {
+            padding: 2rem;
+        }
+        
+        .producto-nombre {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .producto-precio {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff4444;
+            margin-bottom: 1.5rem;
+        }
+        
+        .producto-descripcion {
+            color: #ccc;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .producto-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #333;
+            border-radius: 10px;
+        }
+        
+        .meta-item {
+            text-align: center;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 0.5rem;
+        }
+        
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        
+        .acciones {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background: #28a745;
+            color: white;
+            flex: 2;
+        }
+        
+        .btn-primary:hover {
+            background: #218838;
+        }
+        
+        .btn-primary:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-temporal {
+            background: #17a2b8;
+            color: white;
+            flex: 2;
+        }
+        
+        .btn-temporal:hover {
+            background: #138496;
+        }
+        
+        .productos-relacionados {
+            margin-top: 3rem;
+        }
+        
+        .relacionados-titulo {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            border-bottom: 2px solid #ff0000;
+            padding-bottom: 0.5rem;
+        }
+        
+        .relacionados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .producto-mini {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 1rem;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            border: 1px solid #444;
+        }
+        
+        .producto-mini:hover {
+            transform: translateY(-5px);
+            border-color: #ff0000;
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.3);
+        }
+        
+        .producto-mini-nombre {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .producto-mini-precio {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        
+        /* Mini Carrito Flotante */
+        .mini-carrito {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .mini-carrito:hover {
+            background: #218838;
+            transform: scale(1.05);
+        }
+        
+        .mini-carrito.vacio {
+            background: #6c757d;
+        }
+        
+        .mini-carrito.vacio:hover {
+            background: #5a6268;
+        }
+        
+        .carrito-cantidad {
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .mensaje-temporal {
+            background: #17a2b8;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .acciones {
+                flex-direction: column;
+            }
+            
+            .producto-imagen {
+                height: 200px;
+                font-size: 4rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="{% url 'core:menu_restaurante' producto.restaurante.id %}" class="back-btn">← Volver al Menú</a>
+        <h1>Detalles del Producto</h1>
+    </div>
+    
+    <div class="container">
+        <div class="producto-detalle">
+            <div class="producto-imagen">
+                {% if producto.imagen %}
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" style="width: 100%; height: 100%; object-fit: cover;">
+                {% else %}
+                {{ producto.categoria_menu.icono|default:"🍔" }}
+                {% endif %}
+            </div>
+            
+            <div class="producto-info">
+                <h1 class="producto-nombre">{{ producto.nombre }}</h1>
+                <div class="producto-precio">${{ producto.precio }}</div>
+                
+                <div class="producto-descripcion">
+                    {{ producto.descripcion|default:"Una deliciosa opción preparada con los mejores ingredientes para tu disfrute." }}
+                </div>
+                
+                <div class="producto-meta">
+                    <div class="meta-item">
+                        <div class="meta-label">Restaurante</div>
+                        <div class="meta-value">{{ producto.restaurante.nombre }}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Categoría</div>
+                        <div class="meta-value">{{ producto.categoria_menu.nombre }}</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="meta-label">Disponibilidad</div>
+                        <div class="meta-value">
+                            {% if producto.stock_actual > 0 %}
+                            <span style="color: #28a745;">✅ En stock</span>
+                            {% else %}
+                            <span style="color: #dc3545;">❌ Agotado</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="acciones">
+                    {% if producto.stock_actual > 0 %}
+                    <button type="button" class="btn btn-temporal" 
+                            onclick="agregarTemporal({{ producto.id }}, '{{ producto.nombre }}', {{ producto.precio }})">
+                        🛒 Agregar Temporal
+                    </button>
+                    <div class="mensaje-temporal" id="mensaje-temporal">
+                        ✅ Agregado temporalmente - Ve al menú para ver tu carrito
+                    </div>
+                    {% else %}
+                    <button class="btn btn-primary" disabled>❌ Agotado</button>
+                    {% endif %}
+                    <a href="{% url 'core:menu_restaurante' producto.restaurante.id %}" class="btn btn-secondary">← Volver</a>
+                </div>
+            </div>
+        </div>
+        
+        {% if productos_relacionados %}
+        <div class="productos-relacionados">
+            <h2 class="relacionados-titulo">Productos Relacionados</h2>
+            <div class="relacionados-grid">
+                {% for relacionado in productos_relacionados %}
+                <a href="{% url 'core:detalle_producto' relacionado.id %}" class="producto-mini">
+                    <div class="producto-mini-nombre">{{ relacionado.nombre }}</div>
+                    <div class="producto-mini-precio">${{ relacionado.precio }}</div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Mini Carrito Flotante -->
+    <div class="mini-carrito vacio" id="miniCarrito" onclick="irAlMenu()">
+        <span>🛒</span>
+        <span class="carrito-cantidad" id="carritoCantidad">0</span>
+        <span>Ver Carrito</span>
+    </div>
+
+    <script>
+    // Carrito temporal en localStorage (mismo que en menu_restaurante.html)
+    let carritoTemporal = JSON.parse(localStorage.getItem('carritoTemporal')) || [];
+    
+    // Actualizar mini carrito
+    function actualizarMiniCarrito() {
+        const totalItems = carritoTemporal.reduce((sum, item) => sum + item.cantidad, 0);
+        document.getElementById('carritoCantidad').textContent = totalItems;
+        
+        const miniCarrito = document.getElementById('miniCarrito');
+        if (totalItems > 0) {
+            miniCarrito.classList.remove('vacio');
+        } else {
+            miniCarrito.classList.add('vacio');
+        }
+    }
+    
+    // Agregar producto temporalmente
+    function agregarTemporal(productoId, productoNombre, productoPrecio) {
+        const productoExistente = carritoTemporal.find(item => item.id === productoId);
+        
+        if (productoExistente) {
+            productoExistente.cantidad += 1;
+        } else {
+            carritoTemporal.push({
+                id: productoId,
+                nombre: productoNombre,
+                precio: parseFloat(productoPrecio),
+                cantidad: 1
+            });
+        }
+        
+        // Guardar en localStorage
+        localStorage.setItem('carritoTemporal', JSON.stringify(carritoTemporal));
+        
+        // Mostrar mensaje
+        const mensaje = document.getElementById('mensaje-temporal');
+        mensaje.style.display = 'block';
+        setTimeout(() => {
+            mensaje.style.display = 'none';
+        }, 3000);
+        
+        actualizarMiniCarrito();
+    }
+    
+    // Ir al menú principal para ver el carrito completo
+    function irAlMenu() {
+        window.location.href = "{% url 'core:menu_restaurante' producto.restaurante.id %}";
+    }
+    
+    // Inicializar
+    actualizarMiniCarrito();
+</script>
+</body>
+</html>
