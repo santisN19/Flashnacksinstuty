@@ -471,10 +471,10 @@ def menu_negocio_view(request, negocio):
     # En tu views.py - agregar estas vistas
 from django.http import JsonResponse
 from django.core import serializers
-from .models import Restaurante, Producto
+from .models import RestauranteVirtual, Producto
 
 def api_restaurantes(request):
-    restaurantes = Restaurante.objects.all()
+    restaurantes = RestauranteVirtual.objects.all()
     data = {
         'restaurantes': [
             {
